@@ -1,4 +1,4 @@
-# BI-BEZ Course v2014
+# BI-GIT Course v2014
 ## CTU / ČVUT FIT
 
 ### Lectures
