@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="datatypes_test" version="1.5">
+<types>
+    <fieldType name="text" class="solr.TextField" multiValued="false">
+      <analyzer>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+    <fieldType name="string" class="solr.StrField" multiValued="false"/>
+    <fieldType name="int" class="solr.IntField" multiValued="false"/>
+    <fieldType name="float" class="solr.FloatField" multiValued="false"/>
+    <fieldType name="double" class="solr.DoubleField" multiValued="false"/>
+    <fieldType name="long" class="solr.LongField" multiValued="false"/>
+    <fieldType name="binary" class="solr.BinaryField" multiValued="false"/>
+    <fieldType name="bool" class="solr.BoolField" multiValued="false"/>
+    <fieldType name="uuid" class="solr.UUIDField" multiValued="false"/>
+    <fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true" precisionStep="0" positionIncrementGap="0"/>
+  </types>
+  <fields>
+    <field name="id" type="int" indexed="true" stored="true"/>
+    <field name="user" type="string" indexed="true" stored="true"/>
+    <field name="date" type="date" indexed="true" stored="true"/>
+    <field name="page" type="string" indexed="true" stored="true"/>
+    <field name="severity" type="string" indexed="true" stored="true"/>
+  </fields>
+  
+  <uniqueKey>id</uniqueKey>
+  <defaultSearchField>page</defaultSearchField>
+</schema>

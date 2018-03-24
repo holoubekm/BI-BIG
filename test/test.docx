@@ -1,0 +1,44 @@
+﻿1) all – quorum – three → musi odpovedet vsechny
+
+2)
+describe keyspace
+
+3)
+gossip / possix?
+
+4)
+ulozi se na dsik tabulka sstable (sorting string table)
+
+5)
+na kolik nodů čekám pro odpověď
+
+6)
+solr
+
+7)
+neřeklo se jaký data budu selectovat, takže neví se
+
+8)
+hive
+
+9)
+ano
+
+10)
+zapisování do commit logu a do paměti
+
+11)
+- 6 nodů je informace k ničemu
+- potřebuju 2 (nadpoloviční většina)
+
+12)
+nad keyspace
+
+13)
+peer to peer
+
+14)
+combination of all SSTables associated with the CQL Table plus the current state of the MemTable.
+
+15)
+nad sstablema

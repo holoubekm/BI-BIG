@@ -1,0 +1,1 @@
+cqlsh IP < cassandra-10000.cql

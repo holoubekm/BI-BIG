@@ -1,0 +1,135 @@
+load jar 'path.../'
+
+
+/******** LOAD OMS2HIVE **********/
+https://github.com/PanierAvide/OSM2Hive/raw/master/OSM2Hive.jar
+
+
+cqslh> CREATE KEYSPACE mykeyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
+
+hive>
+ADD JAR /path/to/osm2hive.jar;
+
+CREATE TEMPORARY FUNCTION OSMImportNodes AS 'info.pavie.osm2hive.controller.HiveNodeImporter';
+CREATE TEMPORARY FUNCTION OSMImportWays AS 'info.pavie.osm2hive.controller.HiveWayImporter';
+CREATE TEMPORARY FUNCTION OSMImportRelations AS 'info.pavie.osm2hive.controller.HiveRelationImporter';
+
+CREATE TABLE osmdata(osm_content STRING) STORED AS TEXTFILE;
+LOAD DATA LOCAL INPATH '/path/to/data.osm' OVERWRITE INTO TABLE osmdata;
+
+CREATE TABLE osmnodes AS SELECT OSMImportNodes(osm_content) FROM osmdata;
+CREATE TABLE osmways AS SELECT OSMImportWays(osm_content) FROM osmdata;
+CREATE TABLE osmrelations AS SELECT OSMImportRelations(osm_content) FROM osmdata;
+
+/*********************************/
+
+/******** LOAD kamery.csv ********/
+
+CREATE TABLE kamery(name STRING, externalid STRING,lat STRING, long STRING) row format delimited fields terminated by ',' stored AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH 'filepath' OVERWRITE INTO TABLE kamery;
+
+/*********************************/
+
+
+query ->
+	select tags['name'], ST_GeodesicLengthWGS84(ST_SetSRID(ST_LineString(latitude, longitude, xxx, yyy), 4326)) as dist from osmnodes where tags['name'] is not null order by dist limit 100;
+
+	select * from kamery k join
+	(
+	) p on p.
+
+	select t.* from 
+	(
+		select ST_GeodesicLengthWGS84(ST_SetSRID(ST_LineString(k.lat, k.long, o.longitude, o.latitude), 4326)) as dist, o.tags['name'], k.name from kamery k cross join osmnodes o
+		where o.tags['name'] is not null limit 10
+	) t where t.dist is not null order by t.dist;
+
+
+Objekty, ktere jsou pobliz kamer
+
+select km.name, km.place, km.dist from kamery cam join 
+(
+	select subq.* from 
+	(
+		select ST_GeodesicLengthWGS84(ST_SetSRID(ST_LineString(kam.lat, kam.long, node.latitude, node.longitude), 4326)) as dist, kam.name, node.tags['name'] as place from kamery kam
+		cross join 
+		osmnodes node where node.tags['name'] is not null 
+	) subq where subq.dist < 500
+) km on km.name = cam.name 
+order by km.name, km.dist;
+
+
+
+Kolik kamer se v Praze diva na jedno misto?
+
+select *, count(name) from 
+(
+	select ST_GeodesicLengthWGS84(ST_SetSRID(ST_LineString(kam.lat, kam.long, node.latitude, node.longitude), 4326)) as dist, kam.name, node.tags['name'] as place from kamery kam cross join osmnodes node where node.tags['name'] is not null 
+) 
+subq where subq.dist < 500 group by place;
+
+
+node1:50030/jobdetails.jsp?jobid=job_201511280931_0001
+
+
+ST_LineString(prev_longitude, prev_latitude, longitude, latitude)
+
+
+create temporary function ST_Point as ‚com.esri.hadoop.hive.ST_Point‘; 
+create temporary function ST_LineString as ‚com.esri.hadoop.hive.ST_LineString‘; 
+create temporary function ST_Length as ‚com.esri.hadoop.hive.ST_Length‘; 
+create temporary function ST_GeodesicLengthWGS84 as ‚com.esri.hadoop.hive.ST_GeodesicLengthWGS84‘; 
+create temporary function ST_SetSRID as ‚com.esri.hadoop.hive.ST_SetSRID‘; 
+create temporary function ST_Polygon as ‚com.esri.hadoop.hive.ST_Polygon‘; 
+create temporary function ST_Intersects as ‚com.esri.hadoop.hive.ST_Intersects‘;
+
+create temporary function ST_Polygon as ‚com.esri.hadoop.hive.ST_Polygon‘; 
+create temporary function ST_Intersects as ‚com.esri.hadoop.hive.ST_Intersects‘;
+
+ using jar ‚hdfs:///user/esri/spatial-sdk-hive-1.0.3-SNAPSHOT.jar‘;
+
+Kulatak -> 50.1006227, 14.3953222
+
+
+
+cd framework 
+wget https://github.com/Esri/spatial-framework-for-hadoop/archive/master.zip 
+unzip master 
+cd spatial-framework-for-hadoop-master 
+mvn clean package 
+hadoop fs -put hive/target/spatial-sdk-hive-1.0.3-SNAPSHOT.jar /user/esri 
+hadoop fs -put json/target/spatial-sdk-json-1.0.3-SNAPSHOT.jar /user/esri 
+hadoop fs -put hive/function-ddl.sql /user/esri
+
+# download and build api 
+cd /tmp/gis/api 
+wget https://github.com/Esri/geometry-api-java/archive/master.zip 
+unzip master 
+cd geometry-api-java-master 
+mvn clean package 
+hadoop fs -put target/esri-geometry-api-1.2.jar /user/esri
+
+# clean up 
+cd /tmp 
+rm -rf gis
+
+
+add jar hdfs:///user/user/spatial-sdk-hive-1.0.3-SNAPSHOT.jar; 
+add jar hdfs:///user/user/spatial-sdk-json-1.0.3-SNAPSHOT.jar; 
+add jar hdfs:///user/user/esri-geometry-api-1.2.jar;
+
+
+
+
+
+/******** STACI **********/
+
+/**** Ale v tomhle poradi! *///
+
+ADD JAR esri-geometry-api-1.2.1.jar 
+ADD JAR spatial-sdk-hive-1.1.1-SNAPSHOT.jar 
+
+SOURCE function-ddl.sql 
+
+/******** STACI **********/
