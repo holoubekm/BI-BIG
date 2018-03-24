@@ -1,5 +1,6 @@
 # BI-GIT Course v2014
-## CTU / ČVUT FIT
+## DB technologie pro Big Data
+### CTU / ČVUT FIT
 
 ### Lectures
 #### Lecture 5
